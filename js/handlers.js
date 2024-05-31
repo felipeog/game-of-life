@@ -1,6 +1,14 @@
 import { color } from "./theme.js";
-import { createRandomGeneration, getNextGeneration, render, setCanvasSize } from "./functions.js";
-import { FRAMES_PER_SECOND, MAX_GENERATIONS, ONE_SECOND_IN_MS } from "./constants.js";
+import {
+  createRandomGeneration,
+  getNextGeneration,
+  render,
+} from "./functions.js";
+import {
+  FRAMES_PER_SECOND,
+  MAX_GENERATIONS,
+  ONE_SECOND_IN_MS,
+} from "./constants.js";
 import { state } from "./state.js";
 import { wrapper } from "./elements.js";
 
@@ -17,7 +25,9 @@ export function handleWindowLoad() {
     const currentGeneration = state.generations.at(-1);
     const nextGeneration = getNextGeneration(currentGeneration);
 
-    state.generations = [...state.generations, nextGeneration].slice(-MAX_GENERATIONS);
+    state.generations = [...state.generations, nextGeneration].slice(
+      -MAX_GENERATIONS
+    );
 
     requestAnimationFrame(() => {
       render(state.generations);

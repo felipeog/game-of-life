@@ -10,21 +10,26 @@ const lightTheme = {
 };
 
 function getColor() {
-  const prefersDarkTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const theme = prefersDarkTheme ? darkTheme : lightTheme;
-  const background = `rgb(${theme.background.r} ${theme.background.g} ${theme.background.b})`;
+  const prefersDarkTheme =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const { background, foreground } = prefersDarkTheme ? darkTheme : lightTheme;
   const generations = [];
 
   for (let index = 0; index < MAX_GENERATIONS - 1; index++) {
     generations.push(
-      `rgb(${theme.foreground.r} ${theme.foreground.g} ${theme.foreground.b} / ${(index * 0.2) / MAX_GENERATIONS})`
+      `rgb(${foreground.r} ${foreground.g} ${foreground.b} / ${
+        (index * 0.2) / MAX_GENERATIONS
+      })`
     );
   }
 
-  generations[MAX_GENERATIONS - 1] = `rgb(${theme.foreground.r} ${theme.foreground.g} ${theme.foreground.b})`;
+  generations[
+    MAX_GENERATIONS - 1
+  ] = `rgb(${foreground.r} ${foreground.g} ${foreground.b})`;
 
   return {
-    background,
+    background: `rgb(${background.r} ${background.g} ${background.b})`,
     generations,
   };
 }

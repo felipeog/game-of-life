@@ -24,13 +24,25 @@ export function createRandomGeneration() {
 export function getNeighborsCount(state, rowIndex, columnIndex) {
   let count = 0;
 
-  for (let neighborRowIndex = rowIndex - 1; neighborRowIndex <= rowIndex + 1; neighborRowIndex++) {
-    for (let neighborColumnIndex = columnIndex - 1; neighborColumnIndex <= columnIndex + 1; neighborColumnIndex++) {
-      if (neighborRowIndex === rowIndex && neighborColumnIndex === columnIndex) {
+  for (
+    let neighborRowIndex = rowIndex - 1;
+    neighborRowIndex <= rowIndex + 1;
+    neighborRowIndex++
+  ) {
+    for (
+      let neighborColumnIndex = columnIndex - 1;
+      neighborColumnIndex <= columnIndex + 1;
+      neighborColumnIndex++
+    ) {
+      if (
+        neighborRowIndex === rowIndex &&
+        neighborColumnIndex === columnIndex
+      ) {
         continue;
       }
 
-      const isNeighborAlive = !!state?.[neighborRowIndex]?.[neighborColumnIndex];
+      const isNeighborAlive =
+        !!state?.[neighborRowIndex]?.[neighborColumnIndex];
 
       if (isNeighborAlive) {
         count++;
@@ -52,8 +64,16 @@ export function getCellsToCheck(state) {
         continue;
       }
 
-      for (let neighborRowIndex = rowIndex - 1; neighborRowIndex <= rowIndex + 1; neighborRowIndex++) {
-        for (let neighborColumnIndex = columnIndex - 1; neighborColumnIndex <= columnIndex + 1; neighborColumnIndex++) {
+      for (
+        let neighborRowIndex = rowIndex - 1;
+        neighborRowIndex <= rowIndex + 1;
+        neighborRowIndex++
+      ) {
+        for (
+          let neighborColumnIndex = columnIndex - 1;
+          neighborColumnIndex <= columnIndex + 1;
+          neighborColumnIndex++
+        ) {
           cellsToCheck.add(`${neighborRowIndex}:${neighborColumnIndex}`);
         }
       }
@@ -115,7 +135,10 @@ export function setCanvasSize(size) {
 }
 
 export function shouldResizeCanvas(size) {
-  return canvas.width !== size * window.devicePixelRatio || canvas.height !== size * window.devicePixelRatio;
+  return (
+    canvas.width !== size * window.devicePixelRatio ||
+    canvas.height !== size * window.devicePixelRatio
+  );
 }
 
 export function render(generations) {
