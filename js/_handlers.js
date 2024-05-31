@@ -1,16 +1,16 @@
-import { color } from "./theme.js";
+import { color } from "./_theme.js";
 import {
   createRandomGeneration,
   getNextGeneration,
   render,
-} from "./functions.js";
+} from "./_functions.js";
 import {
   FRAMES_PER_SECOND,
   MAX_GENERATIONS,
   ONE_SECOND_IN_MS,
-} from "./constants.js";
-import { state } from "./state.js";
-import { wrapper } from "./elements.js";
+} from "./_constants.js";
+import { state } from "./_state.js";
+import { wrapper } from "./_elements.js";
 
 export function handleWindowLoad() {
   wrapper.style.backgroundColor = color.background;

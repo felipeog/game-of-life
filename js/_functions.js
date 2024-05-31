@@ -1,7 +1,7 @@
-import { canvas, context } from "./elements.js";
-import { color } from "./theme.js";
-import { COLUMNS, ROWS } from "./constants.js";
-import { state } from "./state.js";
+import { canvas, context } from "./_elements.js";
+import { color } from "./_theme.js";
+import { COLUMNS, ROWS } from "./_constants.js";
+import { state } from "./_state.js";
 
 export function createRandomGeneration() {
   const grid = [];

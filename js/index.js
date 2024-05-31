@@ -1,4 +1,4 @@
-import { handleWindowLoad, handleWindowResize } from "./handlers.js";
+import { handleWindowLoad, handleWindowResize } from "./_handlers.js";
 
 window.addEventListener("load", handleWindowLoad);
 

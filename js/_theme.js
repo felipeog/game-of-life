@@ -1,4 +1,4 @@
-import { MAX_GENERATIONS } from "./constants.js";
+import { MAX_GENERATIONS } from "./_constants.js";
 
 const darkTheme = {
   background: { r: 10, g: 10, b: 15 },
