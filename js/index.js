@@ -12,7 +12,6 @@ const FRAMES_PER_SECOND = 10;
    Theme
 ======================================== */
 
-const style = getComputedStyle(document.body);
 const color = {
   background: "rgb(10 10 15 / 1)",
   generations: (() => {
@@ -33,6 +32,7 @@ const color = {
 ======================================== */
 
 const state = {
+  size: Math.min(window.innerWidth, window.innerHeight),
   generations: [],
 };
 
@@ -40,6 +40,7 @@ const state = {
    Elements
 ======================================== */
 
+const wrapper = document.querySelector("#wrapper");
 const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
 
@@ -145,24 +146,21 @@ function getNextGeneration(state) {
   return grid;
 }
 
-function setCanvasSize() {
+function setCanvasSize(size) {
   // set the actual size of the canvas
-  canvas.width = window.innerWidth * window.devicePixelRatio;
-  canvas.height = window.innerHeight * window.devicePixelRatio;
+  canvas.width = size * window.devicePixelRatio;
+  canvas.height = size * window.devicePixelRatio;
 
   // scale the context to ensure correct drawing operations
   context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
   // set the drawn size of the canvas
-  canvas.style.width = `${window.innerWidth}px`;
-  canvas.style.height = `${window.innerHeight}px`;
+  canvas.style.width = `${size}px`;
+  canvas.style.height = `${size}px`;
 }
 
-function shouldResizeCanvas() {
-  return (
-    canvas.width !== window.innerWidth * window.devicePixelRatio ||
-    canvas.height !== window.innerHeight * window.devicePixelRatio
-  );
+function shouldResizeCanvas(size) {
+  return canvas.width !== size * window.devicePixelRatio || canvas.height !== size * window.devicePixelRatio;
 }
 
 /* ========================================
@@ -170,17 +168,17 @@ function shouldResizeCanvas() {
 ======================================== */
 
 function render(generations) {
-  if (shouldResizeCanvas()) {
-    setCanvasSize();
+  if (shouldResizeCanvas(state.size)) {
+    setCanvasSize(state.size);
   }
 
   const colors = color.generations.slice(-state.generations.length);
-  const cellWidth = window.innerWidth / COLUMNS;
-  const cellHeight = window.innerHeight / ROWS;
+  const cellWidth = state.size / COLUMNS;
+  const cellHeight = state.size / ROWS;
 
   // clear the canvas
   context.fillStyle = color.background;
-  context.fillRect(0, 0, window.innerWidth, window.innerHeight);
+  context.fillRect(0, 0, state.size, state.size);
 
   generations.forEach((generation, index) => {
     // draw cells and connections
@@ -259,6 +257,8 @@ function render(generations) {
 ======================================== */
 
 window.addEventListener("load", () => {
+  wrapper.style.backgroundColor = color.background;
+
   const firstGeneration = createRandomGeneration();
 
   state.generations = [firstGeneration];
@@ -277,4 +277,8 @@ window.addEventListener("load", () => {
       render(state.generations);
     });
   }, ONE_SECOND_IN_MS / FRAMES_PER_SECOND);
+});
+
+window.addEventListener("resize", () => {
+  state.size = Math.min(window.innerWidth, window.innerHeight);
 });
