@@ -11,7 +11,6 @@ export function createRandomGeneration() {
 
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       const isAlive = Math.round(Math.random());
-
       row.push(isAlive);
     }
 
@@ -53,6 +52,9 @@ export function getNeighborsCount(state, rowIndex, columnIndex) {
   return count;
 }
 
+/**
+ * get the coordinate of alive cells and its neighbors
+ */
 export function getCellsToCheck(state) {
   const cellsToCheck = new Set();
 
@@ -93,7 +95,6 @@ export function getNextGeneration(state) {
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       if (!cellsToCheck.has(`${rowIndex}:${columnIndex}`)) {
         row.push(state[rowIndex][columnIndex]);
-
         continue;
       }
 
@@ -102,13 +103,11 @@ export function getNextGeneration(state) {
 
       if (isAlive && (neighborsCount === 2 || neighborsCount === 3)) {
         row.push(1);
-
         continue;
       }
 
       if (!isAlive && neighborsCount === 3) {
         row.push(1);
-
         continue;
       }
 
@@ -146,7 +145,7 @@ export function render(generations) {
     setCanvasSize(state.size);
   }
 
-  const colors = color.generations.slice(-state.generations.length);
+  const generationColors = color.generations.slice(-state.generations.length);
   const cellWidth = state.size / COLUMNS;
   const cellHeight = state.size / ROWS;
 
@@ -154,8 +153,8 @@ export function render(generations) {
   context.fillStyle = color.background;
   context.fillRect(0, 0, state.size, state.size);
 
+  // draw generations' cells and connections
   generations.forEach((generation, index) => {
-    // draw cells and connections
     context.beginPath();
 
     for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
@@ -166,62 +165,61 @@ export function render(generations) {
           continue;
         }
 
-        const offsetX = cellWidth * 0.36;
-        const offsetY = cellHeight * 0.36;
-
+        const xRadiusOffset = cellWidth * 0.36;
+        const yRadiusOffset = cellHeight * 0.36;
         const x1 = columnIndex * cellWidth;
         const y1 = rowIndex * cellHeight;
         const x2 = x1 + cellWidth;
         const y2 = y1 + cellHeight;
 
         // cell
-        context.moveTo(x1 + offsetX, y1);
-        context.lineTo(x2 - offsetX, y1);
-        context.quadraticCurveTo(x2, y1, x2, y1 + offsetY);
-        context.lineTo(x2, y2 - offsetY);
-        context.quadraticCurveTo(x2, y2, x2 - offsetX, y2);
-        context.lineTo(x1 + offsetX, y2);
-        context.quadraticCurveTo(x1, y2, x1, y2 - offsetY);
-        context.lineTo(x1, y1 + offsetY);
-        context.quadraticCurveTo(x1, y1, x1 + offsetX, y1);
+        context.moveTo(x1 + xRadiusOffset, y1);
+        context.lineTo(x2 - xRadiusOffset, y1);
+        context.quadraticCurveTo(x2, y1, x2, y1 + yRadiusOffset);
+        context.lineTo(x2, y2 - yRadiusOffset);
+        context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
+        context.lineTo(x1 + xRadiusOffset, y2);
+        context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
+        context.lineTo(x1, y1 + yRadiusOffset);
+        context.quadraticCurveTo(x1, y1, x1 + xRadiusOffset, y1);
 
         // bottom left connection
         if (!!generation?.[rowIndex + 1]?.[columnIndex - 1]) {
-          context.moveTo(x1, y2 - offsetY);
-          context.lineTo(x1 + offsetX, y2);
-          context.quadraticCurveTo(x1, y2, x1, y2 + offsetY);
-          context.lineTo(x1 - offsetX, y2);
-          context.quadraticCurveTo(x1, y2, x1, y2 - offsetY);
+          context.moveTo(x1, y2 - yRadiusOffset);
+          context.lineTo(x1 + xRadiusOffset, y2);
+          context.quadraticCurveTo(x1, y2, x1, y2 + yRadiusOffset);
+          context.lineTo(x1 - xRadiusOffset, y2);
+          context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
         }
 
         // bottom connection
         if (!!generation?.[rowIndex + 1]?.[columnIndex]) {
-          context.moveTo(x1, y2 - offsetY);
-          context.lineTo(x2, y2 - offsetY);
-          context.lineTo(x2, y2 + offsetY);
-          context.lineTo(x1, y2 + offsetY);
+          context.moveTo(x1, y2 - yRadiusOffset);
+          context.lineTo(x2, y2 - yRadiusOffset);
+          context.lineTo(x2, y2 + yRadiusOffset);
+          context.lineTo(x1, y2 + yRadiusOffset);
         }
 
         // bottom right connection
         if (!!generation?.[rowIndex + 1]?.[columnIndex + 1]) {
-          context.moveTo(x2, y2 - offsetY);
-          context.quadraticCurveTo(x2, y2, x2 + offsetX, y2);
-          context.lineTo(x2, y2 + offsetY);
-          context.quadraticCurveTo(x2, y2, x2 - offsetX, y2);
-          context.lineTo(x2, y2 - offsetY);
+          context.moveTo(x2, y2 - yRadiusOffset);
+          context.quadraticCurveTo(x2, y2, x2 + xRadiusOffset, y2);
+          context.lineTo(x2, y2 + yRadiusOffset);
+          context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
+          context.lineTo(x2, y2 - yRadiusOffset);
         }
 
         // right connection
         if (!!generation?.[rowIndex]?.[columnIndex + 1]) {
-          context.moveTo(x2 - offsetX, y1);
-          context.lineTo(x2 + offsetX, y1);
-          context.lineTo(x2 + offsetX, y2);
-          context.lineTo(x2 - offsetX, y2);
+          context.moveTo(x2 - xRadiusOffset, y1);
+          context.lineTo(x2 + xRadiusOffset, y1);
+          context.lineTo(x2 + xRadiusOffset, y2);
+          context.lineTo(x2 - xRadiusOffset, y2);
         }
       }
     }
 
-    context.fillStyle = colors[index];
+    context.fillStyle = generationColors[index];
     context.fill();
   });
 }
