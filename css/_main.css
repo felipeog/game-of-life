@@ -1,0 +1,12 @@
+html {
+  overflow: hidden;
+}
+
+#wrapper {
+  min-width: 100dvw;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+/* #canvas {} */
