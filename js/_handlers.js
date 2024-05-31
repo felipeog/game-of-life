@@ -11,8 +11,11 @@ import {
 } from "./_constants.js";
 import { state } from "./_state.js";
 import { wrapper } from "./_elements.js";
+import { createGui } from "./_gui.js";
 
 export function handleWindowLoad() {
+  createGui();
+
   wrapper.style.backgroundColor = color.background;
 
   const firstGeneration = createRandomGeneration();
