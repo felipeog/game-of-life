@@ -69,9 +69,10 @@ export function createGui() {
       render();
       animate();
     },
-    generationsPerSecond: stateClone.generationsPerSecond,
     background: stateClone.color.background,
     foreground: stateClone.color.foreground,
+    generationsPerSecond: stateClone.generationsPerSecond,
+    hasTrail: stateClone.hasTrail,
     savePreset() {
       const preset = gui.save();
 
@@ -163,6 +164,18 @@ export function createGui() {
 
       state.generationsPerSecond = value;
 
+      animate();
+    });
+
+  gui
+    .add(properties, "hasTrail")
+    .name("Trail")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      state.hasTrail = value;
+
+      render();
       animate();
     });
 

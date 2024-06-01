@@ -6,4 +6,5 @@ export const state = {
   generationsPerSecond: GENERATIONS_PER_SECOND,
   animateTimeoutId: null,
   color: getColor(),
+  hasTrail: true,
 };
