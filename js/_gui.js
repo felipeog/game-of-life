@@ -16,11 +16,18 @@ export function createGui() {
   const stateClone = structuredClone(state);
   const properties = {
     random() {
-      const randomGeneration = createRandomGeneration();
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
-      state.generations = [randomGeneration];
+      const generation = createRandomGeneration();
+
+      state.generations = [generation];
+
+      render();
+      animate();
     },
     gosperGliderGun() {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
       const generation = createEmptyGeneration();
 
       generation[0][24] = 1;
@@ -61,6 +68,9 @@ export function createGui() {
       generation[8][13] = 1;
 
       state.generations = [generation];
+
+      render();
+      animate();
     },
     generationsPerSecond: stateClone.generationsPerSecond,
     background: stateClone.color.background,
@@ -121,10 +131,12 @@ export function createGui() {
     .name("Background color")
     .onFinishChange((value) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
       state.color.background = { ...value };
       wrapper.style.backgroundColor = getCssRgbFromColorObject(
         state.color.background
       );
+
       render();
       animate();
     });
@@ -134,8 +146,10 @@ export function createGui() {
     .name("Foreground color")
     .onFinishChange((value) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
       state.color.foreground = { ...value };
       state.color.generations = getGenerationsColors(state.color.foreground);
+
       render();
       animate();
     });
@@ -145,7 +159,9 @@ export function createGui() {
     .name("Generations per second")
     .onFinishChange((value) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
       state.generationsPerSecond = value;
+
       animate();
     });
 
