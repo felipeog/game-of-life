@@ -1,6 +1,5 @@
 import { canvas, context } from "./_elements.js";
-import { color } from "./_theme.js";
-import { COLUMNS, ROWS } from "./_constants.js";
+import { COLUMNS, ONE_SECOND_IN_MS, ROWS } from "./_constants.js";
 import { state } from "./_state.js";
 
 export function createRandomGeneration() {
@@ -10,8 +9,24 @@ export function createRandomGeneration() {
     const row = [];
 
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
-      const isAlive = Math.round(Math.random());
+      const isAlive = Math.round(Math.random() < 0.3);
       row.push(isAlive);
+    }
+
+    grid.push(row);
+  }
+
+  return grid;
+}
+
+export function createEmptyGeneration() {
+  const grid = [];
+
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+    const row = [];
+
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+      row.push(0);
     }
 
     grid.push(row);
@@ -140,86 +155,107 @@ export function shouldResizeCanvas(size) {
   );
 }
 
-export function render(generations) {
+export function render() {
   if (shouldResizeCanvas(state.size)) {
     setCanvasSize(state.size);
   }
 
-  const generationColors = color.generations.slice(-state.generations.length);
   const cellWidth = state.size / COLUMNS;
   const cellHeight = state.size / ROWS;
 
   // clear the canvas
-  context.fillStyle = color.background;
+  const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
+  context.fillStyle = getCssRgbFromColorObject({
+    ...state.color.background,
+    a: backgroundAlpha,
+  });
   context.fillRect(0, 0, state.size, state.size);
 
-  // draw generations' cells and connections
-  generations.forEach((generation, index) => {
-    context.beginPath();
+  // draw cells and connections
+  context.beginPath();
 
-    for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
-      for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
-        const isDead = !generation[rowIndex][columnIndex];
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+      const isDead = !state.generation[rowIndex][columnIndex];
 
-        if (isDead) {
-          continue;
-        }
+      if (isDead) {
+        continue;
+      }
 
-        const xRadiusOffset = cellWidth * 0.36;
-        const yRadiusOffset = cellHeight * 0.36;
-        const x1 = columnIndex * cellWidth;
-        const y1 = rowIndex * cellHeight;
-        const x2 = x1 + cellWidth;
-        const y2 = y1 + cellHeight;
+      const xRadiusOffset = cellWidth * 0.36;
+      const yRadiusOffset = cellHeight * 0.36;
+      const x1 = columnIndex * cellWidth;
+      const y1 = rowIndex * cellHeight;
+      const x2 = x1 + cellWidth;
+      const y2 = y1 + cellHeight;
 
-        // cell
-        context.moveTo(x1 + xRadiusOffset, y1);
-        context.lineTo(x2 - xRadiusOffset, y1);
-        context.quadraticCurveTo(x2, y1, x2, y1 + yRadiusOffset);
-        context.lineTo(x2, y2 - yRadiusOffset);
-        context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
+      // cell
+      context.moveTo(x1 + xRadiusOffset, y1);
+      context.lineTo(x2 - xRadiusOffset, y1);
+      context.quadraticCurveTo(x2, y1, x2, y1 + yRadiusOffset);
+      context.lineTo(x2, y2 - yRadiusOffset);
+      context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
+      context.lineTo(x1 + xRadiusOffset, y2);
+      context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
+      context.lineTo(x1, y1 + yRadiusOffset);
+      context.quadraticCurveTo(x1, y1, x1 + xRadiusOffset, y1);
+
+      // bottom left connection
+      if (!!state.generation?.[rowIndex + 1]?.[columnIndex - 1]) {
+        context.moveTo(x1, y2 - yRadiusOffset);
         context.lineTo(x1 + xRadiusOffset, y2);
+        context.quadraticCurveTo(x1, y2, x1, y2 + yRadiusOffset);
+        context.lineTo(x1 - xRadiusOffset, y2);
         context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
-        context.lineTo(x1, y1 + yRadiusOffset);
-        context.quadraticCurveTo(x1, y1, x1 + xRadiusOffset, y1);
+      }
 
-        // bottom left connection
-        if (!!generation?.[rowIndex + 1]?.[columnIndex - 1]) {
-          context.moveTo(x1, y2 - yRadiusOffset);
-          context.lineTo(x1 + xRadiusOffset, y2);
-          context.quadraticCurveTo(x1, y2, x1, y2 + yRadiusOffset);
-          context.lineTo(x1 - xRadiusOffset, y2);
-          context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
-        }
+      // bottom connection
+      if (!!state.generation?.[rowIndex + 1]?.[columnIndex]) {
+        context.moveTo(x1, y2 - yRadiusOffset);
+        context.lineTo(x2, y2 - yRadiusOffset);
+        context.lineTo(x2, y2 + yRadiusOffset);
+        context.lineTo(x1, y2 + yRadiusOffset);
+      }
 
-        // bottom connection
-        if (!!generation?.[rowIndex + 1]?.[columnIndex]) {
-          context.moveTo(x1, y2 - yRadiusOffset);
-          context.lineTo(x2, y2 - yRadiusOffset);
-          context.lineTo(x2, y2 + yRadiusOffset);
-          context.lineTo(x1, y2 + yRadiusOffset);
-        }
+      // bottom right connection
+      if (!!state.generation?.[rowIndex + 1]?.[columnIndex + 1]) {
+        context.moveTo(x2, y2 - yRadiusOffset);
+        context.quadraticCurveTo(x2, y2, x2 + xRadiusOffset, y2);
+        context.lineTo(x2, y2 + yRadiusOffset);
+        context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
+        context.lineTo(x2, y2 - yRadiusOffset);
+      }
 
-        // bottom right connection
-        if (!!generation?.[rowIndex + 1]?.[columnIndex + 1]) {
-          context.moveTo(x2, y2 - yRadiusOffset);
-          context.quadraticCurveTo(x2, y2, x2 + xRadiusOffset, y2);
-          context.lineTo(x2, y2 + yRadiusOffset);
-          context.quadraticCurveTo(x2, y2, x2 - xRadiusOffset, y2);
-          context.lineTo(x2, y2 - yRadiusOffset);
-        }
-
-        // right connection
-        if (!!generation?.[rowIndex]?.[columnIndex + 1]) {
-          context.moveTo(x2 - xRadiusOffset, y1);
-          context.lineTo(x2 + xRadiusOffset, y1);
-          context.lineTo(x2 + xRadiusOffset, y2);
-          context.lineTo(x2 - xRadiusOffset, y2);
-        }
+      // right connection
+      if (!!state.generation?.[rowIndex]?.[columnIndex + 1]) {
+        context.moveTo(x2 - xRadiusOffset, y1);
+        context.lineTo(x2 + xRadiusOffset, y1);
+        context.lineTo(x2 + xRadiusOffset, y2);
+        context.lineTo(x2 - xRadiusOffset, y2);
       }
     }
+  }
 
-    context.fillStyle = generationColors[index];
-    context.fill();
-  });
+  context.fillStyle = getCssRgbFromColorObject(state.color.foreground);
+  context.fill();
+}
+
+export function animate() {
+  if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+  state.animateTimeoutId = setTimeout(() => {
+    state.generation = getNextGeneration(state.generation);
+
+    requestAnimationFrame(() => {
+      render();
+    });
+
+    animate();
+  }, ONE_SECOND_IN_MS / state.generationsPerSecond);
+}
+
+export function getCssRgbFromColorObject(colorObject) {
+  const { r, g, b, a } = colorObject;
+
+  return `rgb(${r} ${g} ${b} / ${a ?? 1})`;
 }
