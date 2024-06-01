@@ -6,4 +6,4 @@ export const MAX_GENERATIONS = 10;
 
 export const ONE_SECOND_IN_MS = 1_000;
 
-export const FRAMES_PER_SECOND = 10;
+export const GENERATIONS_PER_SECOND = 10;

@@ -1,6 +1,11 @@
 import { canvas, context } from "./_elements.js";
 import { color } from "./_theme.js";
-import { COLUMNS, ROWS } from "./_constants.js";
+import {
+  COLUMNS,
+  MAX_GENERATIONS,
+  ONE_SECOND_IN_MS,
+  ROWS,
+} from "./_constants.js";
 import { state } from "./_state.js";
 
 export function createRandomGeneration() {
@@ -238,4 +243,23 @@ export function render(generations) {
     context.fillStyle = generationColors[index];
     context.fill();
   });
+}
+
+export function animate() {
+  if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+  state.animateTimeoutId = setTimeout(() => {
+    const currentGeneration = state.generations.at(-1);
+    const nextGeneration = getNextGeneration(currentGeneration);
+
+    state.generations = [...state.generations, nextGeneration].slice(
+      -MAX_GENERATIONS
+    );
+
+    requestAnimationFrame(() => {
+      render(state.generations);
+    });
+
+    animate();
+  }, ONE_SECOND_IN_MS / state.generationsPerSecond);
 }
