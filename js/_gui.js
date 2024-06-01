@@ -3,12 +3,17 @@ import {
   animate,
   createEmptyGeneration,
   createRandomGeneration,
+  getCssRgbFromColorObject,
+  render,
 } from "./_functions.js";
 import { state } from "./_state.js";
 import { LOCAL_STORAGE_KEY } from "./_constants.js";
+import { getGenerationsColors } from "./_theme.js";
+import { wrapper } from "./_elements.js";
 
 export function createGui() {
   const gui = new GUI();
+  const stateClone = structuredClone(state);
   const properties = {
     random() {
       const randomGeneration = createRandomGeneration();
@@ -57,7 +62,9 @@ export function createGui() {
 
       state.generations = [generation];
     },
-    generationsPerSecond: state.generationsPerSecond,
+    generationsPerSecond: stateClone.generationsPerSecond,
+    background: stateClone.color.background,
+    foreground: stateClone.color.foreground,
     savePreset() {
       const preset = gui.save();
 
@@ -82,6 +89,30 @@ export function createGui() {
   gui.add(properties, "random").name("Random");
 
   gui.add(properties, "gosperGliderGun").name("Gosper glider gun");
+
+  gui
+    .addColor(properties, "background", 255)
+    .name("Background color")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+      state.color.background = { ...value };
+      wrapper.style.backgroundColor = getCssRgbFromColorObject(
+        state.color.background
+      );
+      render();
+      animate();
+    });
+
+  gui
+    .addColor(properties, "foreground", 255)
+    .name("Foreground color")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+      state.color.foreground = { ...value };
+      state.color.generations = getGenerationsColors(state.color.foreground);
+      render();
+      animate();
+    });
 
   gui
     .add(properties, "generationsPerSecond", 1, 30, 1)

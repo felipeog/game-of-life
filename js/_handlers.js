@@ -1,5 +1,9 @@
-import { color } from "./_theme.js";
-import { animate, createRandomGeneration, render } from "./_functions.js";
+import {
+  animate,
+  createRandomGeneration,
+  getCssRgbFromColorObject,
+  render,
+} from "./_functions.js";
 import { state } from "./_state.js";
 import { wrapper } from "./_elements.js";
 import { createGui } from "./_gui.js";
@@ -9,7 +13,9 @@ export function handleWindowLoad() {
   createGui();
 
   // set wrapper background based on preferred scheme
-  wrapper.style.backgroundColor = color.background;
+  wrapper.style.backgroundColor = getCssRgbFromColorObject(
+    state.color.background
+  );
 
   // first render
   const firstGeneration = createRandomGeneration();

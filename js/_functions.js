@@ -1,5 +1,4 @@
 import { canvas, context } from "./_elements.js";
-import { color } from "./_theme.js";
 import {
   COLUMNS,
   MAX_GENERATIONS,
@@ -161,21 +160,23 @@ export function shouldResizeCanvas(size) {
   );
 }
 
-export function render(generations) {
+export function render() {
   if (shouldResizeCanvas(state.size)) {
     setCanvasSize(state.size);
   }
 
-  const generationColors = color.generations.slice(-state.generations.length);
+  const generationColors = state.color.generations.slice(
+    -state.generations.length
+  );
   const cellWidth = state.size / COLUMNS;
   const cellHeight = state.size / ROWS;
 
   // clear the canvas
-  context.fillStyle = color.background;
+  context.fillStyle = getCssRgbFromColorObject(state.color.background);
   context.fillRect(0, 0, state.size, state.size);
 
   // draw generations' cells and connections
-  generations.forEach((generation, index) => {
+  state.generations.forEach((generation, index) => {
     context.beginPath();
 
     for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
@@ -240,7 +241,7 @@ export function render(generations) {
       }
     }
 
-    context.fillStyle = generationColors[index];
+    context.fillStyle = getCssRgbFromColorObject(generationColors[index]);
     context.fill();
   });
 }
@@ -262,4 +263,10 @@ export function animate() {
 
     animate();
   }, ONE_SECOND_IN_MS / state.generationsPerSecond);
+}
+
+export function getCssRgbFromColorObject(colorObject) {
+  const { r, g, b, a } = colorObject;
+
+  return `rgb(${r} ${g} ${b} / ${a ?? 1})`;
 }
