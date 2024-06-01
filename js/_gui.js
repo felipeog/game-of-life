@@ -73,6 +73,7 @@ export function createGui() {
     foreground: stateClone.color.foreground,
     generationsPerSecond: stateClone.generationsPerSecond,
     hasTrail: stateClone.hasTrail,
+    trailAlpha: stateClone.trailAlpha,
     savePreset() {
       const preset = gui.save();
 
@@ -174,6 +175,20 @@ export function createGui() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.hasTrail = value;
+
+      render();
+      animate();
+    });
+
+  gui
+    .add(properties, "trailAlpha", 0, 1, 0.05)
+    .name("Trail opacity")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      state.trailAlpha = 1 - value;
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();

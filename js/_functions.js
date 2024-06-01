@@ -164,7 +164,7 @@ export function render() {
   const cellHeight = state.size / ROWS;
 
   // clear the canvas
-  const backgroundAlpha = state.hasTrail ? 0.5 : 1;
+  const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
   context.fillStyle = getCssRgbFromColorObject({
     ...state.color.background,
     a: backgroundAlpha,

@@ -7,4 +7,5 @@ export const state = {
   animateTimeoutId: null,
   color: getColor(),
   hasTrail: true,
+  trailAlpha: 0.5,
 };
