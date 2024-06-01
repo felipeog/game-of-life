@@ -84,6 +84,32 @@ export function createGui() {
         console.error(error);
       }
     },
+    reset() {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      gui.reset();
+
+      for (const controller of gui.controllers) {
+        if (controller.property === "generationsPerSecond") {
+          state.generationsPerSecond = controller.initialValue;
+        }
+
+        if (
+          controller.property === "foreground" ||
+          controller.property === "background"
+        ) {
+          state.color[controller.property] = { ...controller.initialValue };
+        }
+      }
+
+      state.color.generations = getGenerationsColors(state.color.foreground);
+      wrapper.style.backgroundColor = getCssRgbFromColorObject(
+        state.color.background
+      );
+
+      render();
+      animate();
+    },
   };
 
   gui.add(properties, "random").name("Random");
@@ -129,4 +155,6 @@ export function createGui() {
     .add(properties, "loadPreset")
     .name("Load preset")
     .disable(!localStorage.getItem(LOCAL_STORAGE_KEY));
+
+  gui.add(properties, "reset").name("Reset");
 }
