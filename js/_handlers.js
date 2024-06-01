@@ -19,8 +19,8 @@ export function handleWindowLoad() {
 
   // first render
   const firstGeneration = createRandomGeneration();
-  state.generations = [firstGeneration];
-  render(state.generations);
+  state.generation = firstGeneration;
+  render(state.generation);
 
   // subsequent renders
   animate();

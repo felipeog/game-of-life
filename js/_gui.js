@@ -8,8 +8,7 @@ import {
 } from "./_functions.js";
 import { state } from "./_state.js";
 import { LOCAL_STORAGE_KEY } from "./_constants.js";
-import { getGenerationsColors } from "./_theme.js";
-import { wrapper } from "./_elements.js";
+import { context, wrapper } from "./_elements.js";
 
 export function createGui() {
   const gui = new GUI();
@@ -18,9 +17,7 @@ export function createGui() {
     random() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
-      const generation = createRandomGeneration();
-
-      state.generations = [generation];
+      state.generation = createRandomGeneration();
 
       render();
       animate();
@@ -67,7 +64,7 @@ export function createGui() {
       generation[8][12] = 1;
       generation[8][13] = 1;
 
-      state.generations = [generation];
+      state.generation = generation;
 
       render();
       animate();
@@ -112,10 +109,11 @@ export function createGui() {
         }
       }
 
-      state.color.generations = getGenerationsColors(state.color.foreground);
       wrapper.style.backgroundColor = getCssRgbFromColorObject(
         state.color.background
       );
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();
@@ -136,6 +134,8 @@ export function createGui() {
       wrapper.style.backgroundColor = getCssRgbFromColorObject(
         state.color.background
       );
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();
@@ -148,7 +148,8 @@ export function createGui() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.color.foreground = { ...value };
-      state.color.generations = getGenerationsColors(state.color.foreground);
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();
