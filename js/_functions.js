@@ -10,7 +10,7 @@ export function createRandomGeneration() {
     const row = [];
 
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
-      const isAlive = Math.round(Math.random());
+      const isAlive = Math.round(Math.random() < 0.3);
       row.push(isAlive);
     }
 
