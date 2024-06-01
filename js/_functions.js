@@ -20,6 +20,22 @@ export function createRandomGeneration() {
   return grid;
 }
 
+export function createEmptyGeneration() {
+  const grid = [];
+
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+    const row = [];
+
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+      row.push(0);
+    }
+
+    grid.push(row);
+  }
+
+  return grid;
+}
+
 export function getNeighborsCount(state, rowIndex, columnIndex) {
   let count = 0;
 
