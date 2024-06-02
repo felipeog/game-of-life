@@ -1,6 +1,7 @@
 import { getColor } from "./_theme.js";
 
 export const state = {
+  generation: [],
   size: Math.min(window.innerWidth, window.innerHeight),
   generationsPerSecond: 15,
   animateTimeoutId: null,

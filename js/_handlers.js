@@ -1,12 +1,8 @@
-import {
-  animate,
-  createRandomGeneration,
-  getCssRgbFromColorObject,
-  render,
-} from "./_functions.js";
+import { animate, getCssRgbFromColorObject, render } from "./_rendering.js";
+import { createGui } from "./_gui.js";
+import { createRandomGeneration } from "./_game.js";
 import { state } from "./_state.js";
 import { wrapper } from "./_elements.js";
-import { createGui } from "./_gui.js";
 
 export function handleWindowLoad() {
   // initialize controls gui
@@ -18,8 +14,7 @@ export function handleWindowLoad() {
   );
 
   // first render
-  const firstGeneration = createRandomGeneration();
-  state.generation = firstGeneration;
+  state.generation = createRandomGeneration();
   render(state.generation);
 
   // subsequent renders

@@ -1,14 +1,10 @@
 import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm";
-import {
-  animate,
-  createEmptyGeneration,
-  createRandomGeneration,
-  getCssRgbFromColorObject,
-  render,
-} from "./_functions.js";
-import { state } from "./_state.js";
-import { LOCAL_STORAGE_KEY } from "./_constants.js";
+
+import { animate, getCssRgbFromColorObject, render } from "./_rendering.js";
 import { context, wrapper } from "./_elements.js";
+import { createEmptyGeneration, createRandomGeneration } from "./_game.js";
+import { LOCAL_STORAGE_KEY } from "./_constants.js";
+import { state } from "./_state.js";
 
 export function createGui() {
   const gui = new GUI();
