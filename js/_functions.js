@@ -1,5 +1,5 @@
 import { canvas, context } from "./_elements.js";
-import { COLUMNS, ONE_SECOND_IN_MS, ROWS } from "./_constants.js";
+import { COLUMNS, ROWS } from "./_constants.js";
 import { state } from "./_state.js";
 
 export function createRandomGeneration() {
@@ -182,8 +182,9 @@ export function render() {
         continue;
       }
 
-      const xRadiusOffset = cellWidth * 0.36;
-      const yRadiusOffset = cellHeight * 0.36;
+      const radius = state.isRounded ? state.radius : 0;
+      const xRadiusOffset = cellWidth * radius;
+      const yRadiusOffset = cellHeight * radius;
       const x1 = columnIndex * cellWidth;
       const y1 = rowIndex * cellHeight;
       const x2 = x1 + cellWidth;
@@ -199,6 +200,10 @@ export function render() {
       context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
       context.lineTo(x1, y1 + yRadiusOffset);
       context.quadraticCurveTo(x1, y1, x1 + xRadiusOffset, y1);
+
+      if (radius <= 0) {
+        continue;
+      }
 
       // bottom left connection
       if (!!state.generation?.[rowIndex + 1]?.[columnIndex - 1]) {
@@ -251,7 +256,7 @@ export function animate() {
     });
 
     animate();
-  }, ONE_SECOND_IN_MS / state.generationsPerSecond);
+  }, 1_000 / state.generationsPerSecond);
 }
 
 export function getCssRgbFromColorObject(colorObject) {

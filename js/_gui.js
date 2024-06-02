@@ -19,6 +19,8 @@ export function createGui() {
     generationsPerSecond: initialState.generationsPerSecond,
     hasTrail: initialState.hasTrail,
     trailAlpha: initialState.trailAlpha,
+    isRounded: initialState.isRounded,
+    radius: initialState.radius,
     random() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
@@ -187,6 +189,34 @@ export function createGui() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.trailAlpha = 1 - value;
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
+
+      render();
+      animate();
+    });
+
+  gui
+    .add(properties, "isRounded")
+    .name("Rounded")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      state.isRounded = value;
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
+
+      render();
+      animate();
+    });
+
+  gui
+    .add(properties, "radius", 0, 0.5, 0.05)
+    .name("Radius")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      state.radius = value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, state.size, state.size);
 
