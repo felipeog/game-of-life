@@ -12,12 +12,19 @@ import { context, wrapper } from "./_elements.js";
 
 export function createGui() {
   const gui = new GUI();
-  const stateClone = structuredClone(state);
+  const initialState = structuredClone(state);
   const properties = {
+    background: initialState.color.background,
+    foreground: initialState.color.foreground,
+    generationsPerSecond: initialState.generationsPerSecond,
+    hasTrail: initialState.hasTrail,
+    trailAlpha: initialState.trailAlpha,
     random() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.generation = createRandomGeneration();
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();
@@ -65,15 +72,12 @@ export function createGui() {
       generation[8][13] = 1;
 
       state.generation = generation;
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size, state.size);
 
       render();
       animate();
     },
-    background: stateClone.color.background,
-    foreground: stateClone.color.foreground,
-    generationsPerSecond: stateClone.generationsPerSecond,
-    hasTrail: stateClone.hasTrail,
-    trailAlpha: stateClone.trailAlpha,
     savePreset() {
       const preset = gui.save();
 
@@ -99,10 +103,6 @@ export function createGui() {
       gui.reset();
 
       for (const controller of gui.controllers) {
-        if (controller.property === "generationsPerSecond") {
-          state.generationsPerSecond = controller.initialValue;
-        }
-
         if (
           controller.property === "foreground" ||
           controller.property === "background"
