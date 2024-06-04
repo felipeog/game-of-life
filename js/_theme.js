@@ -7,14 +7,8 @@ const lightTheme = {
   foreground: { r: 70, g: 70, b: 75 },
 };
 
-export function getColor() {
-  const prefersDarkTheme =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const { background, foreground } = prefersDarkTheme ? darkTheme : lightTheme;
+const prefersDarkTheme =
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  return {
-    background,
-    foreground,
-  };
-}
+export const color = prefersDarkTheme ? darkTheme : lightTheme;

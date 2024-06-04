@@ -1,12 +1,12 @@
-import { COLUMNS, ROWS } from "./_constants.js";
+import { state } from "./_state.js";
 
 export function createRandomGeneration() {
   const grid = [];
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
       const isAlive = Math.round(Math.random() < 0.3);
       row.push(isAlive);
     }
@@ -20,10 +20,10 @@ export function createRandomGeneration() {
 export function createEmptyGeneration() {
   const grid = [];
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
       row.push(0);
     }
 
@@ -33,7 +33,7 @@ export function createEmptyGeneration() {
   return grid;
 }
 
-export function getNeighborsCount(state, rowIndex, columnIndex) {
+export function getNeighborsCount(generation, rowIndex, columnIndex) {
   let count = 0;
 
   for (
@@ -54,7 +54,7 @@ export function getNeighborsCount(state, rowIndex, columnIndex) {
       }
 
       const isNeighborAlive =
-        !!state?.[neighborRowIndex]?.[neighborColumnIndex];
+        !!generation?.[neighborRowIndex]?.[neighborColumnIndex];
 
       if (isNeighborAlive) {
         count++;
@@ -65,12 +65,12 @@ export function getNeighborsCount(state, rowIndex, columnIndex) {
   return count;
 }
 
-export function getCellsToCheck(state) {
+export function getCellsToCheck(generation) {
   const cellsToCheck = new Set();
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
-      const isDead = !state[rowIndex][columnIndex];
+  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+      const isDead = !generation[rowIndex][columnIndex];
 
       if (isDead) {
         continue;
@@ -95,21 +95,25 @@ export function getCellsToCheck(state) {
   return cellsToCheck;
 }
 
-export function getNextGeneration(state) {
+export function getNextGeneration(generation) {
   const grid = [];
-  const cellsToCheck = getCellsToCheck(state);
+  const cellsToCheck = getCellsToCheck(generation);
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
       if (!cellsToCheck.has(`${rowIndex}:${columnIndex}`)) {
-        row.push(state[rowIndex][columnIndex]);
+        row.push(generation[rowIndex][columnIndex]);
         continue;
       }
 
-      const isAlive = !!state[rowIndex][columnIndex];
-      const neighborsCount = getNeighborsCount(state, rowIndex, columnIndex);
+      const isAlive = !!generation[rowIndex][columnIndex];
+      const neighborsCount = getNeighborsCount(
+        generation,
+        rowIndex,
+        columnIndex
+      );
 
       if (isAlive && (neighborsCount === 2 || neighborsCount === 3)) {
         row.push(1);

@@ -22,9 +22,9 @@ export function createGui() {
 
       state.generation = createRandomGeneration();
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     },
     gosperGliderGun() {
@@ -71,9 +71,9 @@ export function createGui() {
 
       state.generation = generation;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     },
     savePreset() {
@@ -113,9 +113,9 @@ export function createGui() {
         state.color.background
       );
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     },
   };
@@ -135,9 +135,9 @@ export function createGui() {
         state.color.background
       );
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 
@@ -149,9 +149,9 @@ export function createGui() {
 
       state.color.foreground = { ...value };
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 
@@ -174,7 +174,7 @@ export function createGui() {
 
       state.hasTrail = value;
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 
@@ -186,9 +186,9 @@ export function createGui() {
 
       state.trailAlpha = 1 - value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 
@@ -200,9 +200,9 @@ export function createGui() {
 
       state.isRounded = value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 
@@ -214,9 +214,9 @@ export function createGui() {
 
       state.radius = value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
-      context.fillRect(0, 0, state.size, state.size);
+      context.fillRect(0, 0, state.size.width, state.size.height);
 
-      render();
+      requestAnimationFrame(render);
       animate();
     });
 

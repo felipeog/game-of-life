@@ -1,35 +1,34 @@
 import { canvas, context } from "./_elements.js";
-import { COLUMNS, ROWS } from "./_constants.js";
 import { getNextGeneration } from "./_game.js";
 import { state } from "./_state.js";
 
-export function setCanvasSize(size) {
+export function setCanvasSize() {
   // set the actual size of the canvas
-  canvas.width = size * window.devicePixelRatio;
-  canvas.height = size * window.devicePixelRatio;
+  canvas.width = state.size.width * window.devicePixelRatio;
+  canvas.height = state.size.height * window.devicePixelRatio;
 
   // scale the context to ensure correct drawing operations
   context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
   // set the drawn size of the canvas
-  canvas.style.width = `${size}px`;
-  canvas.style.height = `${size}px`;
+  canvas.style.width = `${state.size.width}px`;
+  canvas.style.height = `${state.size.height}px`;
 }
 
-export function shouldResizeCanvas(size) {
+export function shouldResizeCanvas() {
   return (
-    canvas.width !== size * window.devicePixelRatio ||
-    canvas.height !== size * window.devicePixelRatio
+    canvas.width !== state.size.width * window.devicePixelRatio ||
+    canvas.height !== state.size.height * window.devicePixelRatio
   );
 }
 
 export function render() {
-  if (shouldResizeCanvas(state.size)) {
-    setCanvasSize(state.size);
+  if (shouldResizeCanvas()) {
+    setCanvasSize();
   }
 
-  const cellWidth = state.size / COLUMNS;
-  const cellHeight = state.size / ROWS;
+  const cellWidth = state.size.width / state.size.columns;
+  const cellHeight = state.size.height / state.size.rows;
 
   // clear the canvas
   const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
@@ -37,13 +36,13 @@ export function render() {
     ...state.color.background,
     a: backgroundAlpha,
   });
-  context.fillRect(0, 0, state.size, state.size);
+  context.fillRect(0, 0, state.size.width, state.size.height);
 
   // draw cells and connections
   context.beginPath();
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
       const isDead = !state.generation[rowIndex][columnIndex];
 
       if (isDead) {
@@ -119,9 +118,7 @@ export function animate() {
   state.animateTimeoutId = setTimeout(() => {
     state.generation = getNextGeneration(state.generation);
 
-    requestAnimationFrame(() => {
-      render();
-    });
+    requestAnimationFrame(render);
 
     animate();
   }, 1_000 / state.generationsPerSecond);
