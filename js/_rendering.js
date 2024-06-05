@@ -73,8 +73,9 @@ export function render() {
         continue;
       }
 
-      // bottom left connection
-      if (!!state.generation?.[rowIndex + 1]?.[columnIndex - 1]) {
+      const hasBottomLeftNeighbor =
+        !!state.generation?.[rowIndex + 1]?.[columnIndex - 1];
+      if (hasBottomLeftNeighbor) {
         context.moveTo(x1, y2 - yRadiusOffset);
         context.lineTo(x1 + xRadiusOffset, y2);
         context.quadraticCurveTo(x1, y2, x1, y2 + yRadiusOffset);
@@ -82,16 +83,18 @@ export function render() {
         context.quadraticCurveTo(x1, y2, x1, y2 - yRadiusOffset);
       }
 
-      // bottom connection
-      if (!!state.generation?.[rowIndex + 1]?.[columnIndex]) {
+      const hasBottomNeighbor =
+        !!state.generation?.[rowIndex + 1]?.[columnIndex];
+      if (hasBottomNeighbor) {
         context.moveTo(x1, y2 - yRadiusOffset);
         context.lineTo(x2, y2 - yRadiusOffset);
         context.lineTo(x2, y2 + yRadiusOffset);
         context.lineTo(x1, y2 + yRadiusOffset);
       }
 
-      // bottom right connection
-      if (!!state.generation?.[rowIndex + 1]?.[columnIndex + 1]) {
+      const hasBottomRightNeighbor =
+        !!state.generation?.[rowIndex + 1]?.[columnIndex + 1];
+      if (hasBottomRightNeighbor) {
         context.moveTo(x2, y2 - yRadiusOffset);
         context.quadraticCurveTo(x2, y2, x2 + xRadiusOffset, y2);
         context.lineTo(x2, y2 + yRadiusOffset);
@@ -99,8 +102,9 @@ export function render() {
         context.lineTo(x2, y2 - yRadiusOffset);
       }
 
-      // right connection
-      if (!!state.generation?.[rowIndex]?.[columnIndex + 1]) {
+      const hasRightNeighbor =
+        !!state.generation?.[rowIndex]?.[columnIndex + 1];
+      if (hasRightNeighbor) {
         context.moveTo(x2 - xRadiusOffset, y1);
         context.lineTo(x2 + xRadiusOffset, y1);
         context.lineTo(x2 + xRadiusOffset, y2);
