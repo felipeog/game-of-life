@@ -7,8 +7,8 @@ export function createRandomGeneration() {
     const row = [];
 
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
-      const isAlive = Math.round(Math.random() < 0.3);
-      row.push(isAlive);
+      const cellState = Math.random() < 0.4 ? 1 : 0;
+      row.push(cellState);
     }
 
     grid.push(row);
@@ -55,9 +55,13 @@ export function getNeighborsCount(generation, rowIndex, columnIndex) {
 
       const isNeighborAlive =
         !!generation?.[neighborRowIndex]?.[neighborColumnIndex];
-
       if (isNeighborAlive) {
         count++;
+      }
+
+      const hasEnoughCount = count >= 4;
+      if (hasEnoughCount) {
+        return count;
       }
     }
   }
@@ -71,7 +75,6 @@ export function getCellsToCheck(generation) {
   for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
     for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       const isDead = !generation[rowIndex][columnIndex];
-
       if (isDead) {
         continue;
       }
