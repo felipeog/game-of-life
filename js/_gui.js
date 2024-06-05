@@ -6,8 +6,9 @@ import { createEmptyGeneration, createRandomGeneration } from "./_game.js";
 import { LOCAL_STORAGE_KEY } from "./_constants.js";
 import { state } from "./_state.js";
 
+const gui = new GUI();
+
 export function createGui() {
-  const gui = new GUI();
   const initialState = structuredClone(state);
   const properties = {
     background: initialState.color.background,
@@ -75,25 +76,6 @@ export function createGui() {
 
       requestAnimationFrame(render);
       animate();
-    },
-    savePreset() {
-      const preset = gui.save();
-
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(preset));
-      loadPresetButton.enable();
-    },
-    loadPreset() {
-      if (!localStorage.getItem(LOCAL_STORAGE_KEY)) return;
-
-      try {
-        const preset = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-
-        gui.load(preset);
-      } catch (error) {
-        loadPresetButton.disable();
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
-        console.error(error);
-      }
     },
     reset() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
@@ -220,12 +202,27 @@ export function createGui() {
       animate();
     });
 
-  gui.add(properties, "savePreset").name("Save preset");
-
-  const loadPresetButton = gui
-    .add(properties, "loadPreset")
-    .name("Load preset")
-    .disable(!localStorage.getItem(LOCAL_STORAGE_KEY));
-
   gui.add(properties, "reset").name("Reset");
+
+  loadPreset();
+  gui.onFinishChange(savePreset);
+}
+
+function loadPreset() {
+  if (!localStorage.getItem(LOCAL_STORAGE_KEY)) return;
+
+  try {
+    const preset = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+
+    gui.load(preset);
+  } catch (error) {
+    console.error("error loading preset", error);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  }
+}
+
+function savePreset() {
+  const preset = gui.save();
+
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(preset));
 }
