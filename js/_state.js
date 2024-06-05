@@ -1,11 +1,14 @@
-import { getColor } from "./_theme.js";
+import { color } from "./_theme.js";
 
 export const state = {
   generation: [],
-  size: Math.min(window.innerWidth, window.innerHeight),
+  size: {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  },
   generationsPerSecond: 15,
   animateTimeoutId: null,
-  color: getColor(),
+  color: { ...color },
   hasTrail: true,
   trailAlpha: 0.5,
   isRounded: true,

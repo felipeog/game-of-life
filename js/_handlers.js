@@ -15,12 +15,15 @@ export function handleWindowLoad() {
 
   // first render
   state.generation = createRandomGeneration();
-  render(state.generation);
+  requestAnimationFrame(render);
 
   // subsequent renders
   animate();
 }
 
 export function handleWindowResize() {
-  state.size = Math.min(window.innerWidth, window.innerHeight);
+  state.size = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
 }
