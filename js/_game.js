@@ -1,12 +1,12 @@
-import { state } from "./_state.js";
+import { ROWS, COLUMNS } from "./_constants.js";
 
 export function createRandomGeneration() {
   const grid = [];
 
-  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       const isAlive = Math.round(Math.random() < 0.3);
       row.push(isAlive);
     }
@@ -20,10 +20,10 @@ export function createRandomGeneration() {
 export function createEmptyGeneration() {
   const grid = [];
 
-  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       row.push(0);
     }
 
@@ -68,8 +68,8 @@ export function getNeighborsCount(generation, rowIndex, columnIndex) {
 export function getCellsToCheck(generation) {
   const cellsToCheck = new Set();
 
-  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
-    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       const isDead = !generation[rowIndex][columnIndex];
 
       if (isDead) {
@@ -99,10 +99,10 @@ export function getNextGeneration(generation) {
   const grid = [];
   const cellsToCheck = getCellsToCheck(generation);
 
-  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
     const row = [];
 
-    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       if (!cellsToCheck.has(`${rowIndex}:${columnIndex}`)) {
         row.push(generation[rowIndex][columnIndex]);
         continue;

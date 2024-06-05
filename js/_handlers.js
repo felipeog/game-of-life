@@ -23,7 +23,6 @@ export function handleWindowLoad() {
 
 export function handleWindowResize() {
   state.size = {
-    ...state.size,
     width: window.innerWidth,
     height: window.innerHeight,
   };

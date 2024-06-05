@@ -1,5 +1,6 @@
 import { canvas, context } from "./_elements.js";
 import { getNextGeneration } from "./_game.js";
+import { ROWS, COLUMNS } from "./_constants.js";
 import { state } from "./_state.js";
 
 export function setCanvasSize() {
@@ -27,8 +28,8 @@ export function render() {
     setCanvasSize();
   }
 
-  const cellWidth = state.size.width / state.size.columns;
-  const cellHeight = state.size.height / state.size.rows;
+  const cellWidth = state.size.width / COLUMNS;
+  const cellHeight = state.size.height / ROWS;
 
   // clear the canvas
   const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
@@ -41,8 +42,8 @@ export function render() {
   // draw cells and connections
   context.beginPath();
 
-  for (let rowIndex = 0; rowIndex < state.size.rows; rowIndex++) {
-    for (let columnIndex = 0; columnIndex < state.size.columns; columnIndex++) {
+  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
       const isDead = !state.generation[rowIndex][columnIndex];
 
       if (isDead) {

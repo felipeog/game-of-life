@@ -5,8 +5,6 @@ export const state = {
   size: {
     width: window.innerWidth,
     height: window.innerHeight,
-    rows: Math.round(window.innerHeight / 16),
-    columns: Math.round(window.innerWidth / 16),
   },
   generationsPerSecond: 15,
   animateTimeoutId: null,
