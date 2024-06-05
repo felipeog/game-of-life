@@ -23,7 +23,7 @@ export function shouldResizeCanvas() {
   );
 }
 
-export function render() {
+export function render({ clearCanvas = true }) {
   if (shouldResizeCanvas()) {
     setCanvasSize();
   }
@@ -31,13 +31,14 @@ export function render() {
   const cellWidth = state.size.width / COLUMNS;
   const cellHeight = state.size.height / ROWS;
 
-  // clear the canvas
-  const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
-  context.fillStyle = getCssRgbFromColorObject({
-    ...state.color.background,
-    a: backgroundAlpha,
-  });
-  context.fillRect(0, 0, state.size.width, state.size.height);
+  if (clearCanvas) {
+    const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
+    context.fillStyle = getCssRgbFromColorObject({
+      ...state.color.background,
+      a: backgroundAlpha,
+    });
+    context.fillRect(0, 0, state.size.width, state.size.height);
+  }
 
   // draw cells and connections
   context.beginPath();
@@ -133,4 +134,19 @@ export function getCssRgbFromColorObject(colorObject) {
   const { r, g, b, a } = colorObject;
 
   return `rgb(${r} ${g} ${b} / ${a ?? 1})`;
+}
+
+export function toggleCell(mouseX, mouseY) {
+  const cellWidth = state.size.width / COLUMNS;
+  const cellHeight = state.size.height / ROWS;
+
+  const row = Math.floor(mouseY / cellHeight);
+  const column = Math.floor(mouseX / cellWidth);
+
+  if (row < 0 || row >= ROWS || column < 0 || column >= COLUMNS) return;
+
+  state.generation[row][column] = 1;
+  requestAnimationFrame(() => {
+    render({ clearCanvas: false });
+  });
 }

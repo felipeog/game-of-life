@@ -1,9 +1,13 @@
-import { animate, getCssRgbFromColorObject, render } from "./_rendering.js";
+import {
+  animate,
+  getCssRgbFromColorObject,
+  render,
+  toggleCell,
+} from "./_rendering.js";
 import { createGui } from "./_gui.js";
 import { createRandomGeneration } from "./_game.js";
 import { state } from "./_state.js";
 import { wrapper } from "./_elements.js";
-import { COLUMNS, ROWS } from "./_constants.js";
 
 export function handleWindowLoad() {
   // initialize controls gui
@@ -22,19 +26,20 @@ export function handleWindowLoad() {
   animate();
 }
 
-// TODO: only when paused?
 export function handleWindowMousedown(event) {
-  const { x, y } = event;
+  state.isDragging = true;
 
-  const cellWidth = state.size.width / COLUMNS;
-  const cellHeight = state.size.height / ROWS;
+  toggleCell(event.x, event.y);
+}
 
-  const row = Math.floor(y / cellHeight);
-  const column = Math.floor(x / cellWidth);
+export function handleWindowMousemove(event) {
+  if (!state.isDragging) return;
 
-  state.generation[row][column] = Number(!state.generation[row][column]);
-  // TODO: prevent background fade
-  requestAnimationFrame(render);
+  toggleCell(event.x, event.y);
+}
+
+export function handleWindowMouseup(event) {
+  state.isDragging = false;
 }
 
 export function handleWindowResize() {
