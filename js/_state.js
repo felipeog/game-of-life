@@ -13,4 +13,5 @@ export const state = {
   trailAlpha: 0.5,
   isRounded: true,
   radius: 0.35,
+  isDragging: false,
 };

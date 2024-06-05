@@ -1,4 +1,9 @@
-import { animate, getCssRgbFromColorObject, render } from "./_rendering.js";
+import {
+  animate,
+  getCssRgbFromColorObject,
+  render,
+  toggleCell,
+} from "./_rendering.js";
 import { createGui } from "./_gui.js";
 import { createRandomGeneration } from "./_game.js";
 import { state } from "./_state.js";
@@ -19,6 +24,22 @@ export function handleWindowLoad() {
 
   // subsequent renders
   animate();
+}
+
+export function handleWindowMousedown(event) {
+  state.isDragging = true;
+
+  toggleCell(event.x, event.y);
+}
+
+export function handleWindowMousemove(event) {
+  if (!state.isDragging) return;
+
+  toggleCell(event.x, event.y);
+}
+
+export function handleWindowMouseup(event) {
+  state.isDragging = false;
 }
 
 export function handleWindowResize() {
