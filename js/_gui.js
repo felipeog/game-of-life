@@ -100,6 +100,14 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     },
+    playPause() {
+      if (state.animateTimeoutId) {
+        clearTimeout(state.animateTimeoutId);
+        state.animateTimeoutId = null;
+      } else {
+        animate();
+      }
+    },
   };
 
   gui.add(properties, "random").name("Random");
@@ -201,6 +209,8 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
+
+  gui.add(properties, "playPause").name("Play/Pause");
 
   gui.add(properties, "reset").name("Reset");
 
