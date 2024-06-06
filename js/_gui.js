@@ -7,6 +7,7 @@ import { LOCAL_STORAGE_KEY } from "./_constants.js";
 import { state } from "./_state.js";
 
 const gui = new GUI();
+gui.title("Game of Life");
 
 export function createGui() {
   const initialState = structuredClone(state);
@@ -99,8 +100,9 @@ export function createGui() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       gui.reset();
+      savePreset();
 
-      for (const controller of gui.controllers) {
+      for (const controller of gui.controllersRecursive()) {
         if (
           controller.property === "foreground" ||
           controller.property === "background"
@@ -120,13 +122,13 @@ export function createGui() {
     },
   };
 
-  gui.add(properties, "random").name("Random");
+  const patternFolder = gui.addFolder("Pattern");
+  patternFolder.add(properties, "random").name("Random");
+  patternFolder.add(properties, "gosperGliderGun").name("Gosper glider gun");
+  patternFolder.add(properties, "empty").name("Empty");
 
-  gui.add(properties, "gosperGliderGun").name("Gosper glider gun");
-
-  gui.add(properties, "empty").name("Empty");
-
-  gui
+  const appearanceFolder = gui.addFolder("Appearance");
+  appearanceFolder
     .addColor(properties, "background", 255)
     .name("Background color")
     .onFinishChange((value) => {
@@ -142,8 +144,7 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
-
-  gui
+  appearanceFolder
     .addColor(properties, "foreground", 255)
     .name("Foreground color")
     .onFinishChange((value) => {
@@ -156,19 +157,7 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
-
-  gui
-    .add(properties, "generationsPerSecond", 1, 30, 1)
-    .name("Generations per second")
-    .onFinishChange((value) => {
-      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
-
-      state.generationsPerSecond = value;
-
-      animate();
-    });
-
-  gui
+  appearanceFolder
     .add(properties, "hasTrail")
     .name("Trail")
     .onFinishChange((value) => {
@@ -179,8 +168,7 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
-
-  gui
+  appearanceFolder
     .add(properties, "trailAlpha", 0, 1, 0.05)
     .name("Trail opacity")
     .onFinishChange((value) => {
@@ -193,8 +181,7 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
-
-  gui
+  appearanceFolder
     .add(properties, "isRounded")
     .name("Rounded")
     .onFinishChange((value) => {
@@ -207,8 +194,7 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
-
-  gui
+  appearanceFolder
     .add(properties, "radius", 0, 0.5, 0.05)
     .name("Radius")
     .onFinishChange((value) => {
@@ -221,10 +207,20 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     });
+  appearanceFolder.add(properties, "reset").name("Reset");
 
-  gui.add(properties, "playPause").name("Play/Pause");
+  const gameFolder = gui.addFolder("Game");
+  gameFolder
+    .add(properties, "generationsPerSecond", 1, 30, 1)
+    .name("Generations per second")
+    .onFinishChange((value) => {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
-  gui.add(properties, "reset").name("Reset");
+      state.generationsPerSecond = value;
+
+      animate();
+    });
+  gameFolder.add(properties, "playPause").name("Play/Pause");
 
   loadPreset();
   gui.onFinishChange(savePreset);
