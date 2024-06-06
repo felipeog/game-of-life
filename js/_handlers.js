@@ -26,19 +26,19 @@ export function handleWindowLoad() {
   animate();
 }
 
-export function handleWindowMousedown(event) {
+export function handleCanvasMousedown(event) {
   state.isDragging = true;
 
   toggleCell(event.x, event.y);
 }
 
-export function handleWindowMousemove(event) {
+export function handleCanvasMousemove(event) {
   if (!state.isDragging) return;
 
   toggleCell(event.x, event.y);
 }
 
-export function handleWindowMouseup(event) {
+export function handleCanvasMouseup(event) {
   state.isDragging = false;
 }
 

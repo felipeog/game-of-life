@@ -1,13 +1,15 @@
+import { canvas } from "./_elements.js";
 import {
+  handleCanvasMousedown,
+  handleCanvasMousemove,
+  handleCanvasMouseup,
   handleWindowLoad,
-  handleWindowMousedown,
-  handleWindowMousemove,
-  handleWindowMouseup,
   handleWindowResize,
 } from "./_handlers.js";
 
 window.addEventListener("load", handleWindowLoad);
-window.addEventListener("mousedown", handleWindowMousedown);
-window.addEventListener("mousemove", handleWindowMousemove);
-window.addEventListener("mouseup", handleWindowMouseup);
 window.addEventListener("resize", handleWindowResize);
+
+canvas.addEventListener("mousedown", handleCanvasMousedown);
+canvas.addEventListener("mousemove", handleCanvasMousemove);
+canvas.addEventListener("mouseup", handleCanvasMouseup);
