@@ -77,6 +77,24 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     },
+    empty() {
+      if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
+
+      state.generation = createEmptyGeneration();
+      context.fillStyle = getCssRgbFromColorObject(state.color.background);
+      context.fillRect(0, 0, state.size.width, state.size.height);
+
+      requestAnimationFrame(render);
+      animate();
+    },
+    playPause() {
+      if (state.animateTimeoutId) {
+        clearTimeout(state.animateTimeoutId);
+        state.animateTimeoutId = null;
+      } else {
+        animate();
+      }
+    },
     reset() {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
@@ -100,19 +118,13 @@ export function createGui() {
       requestAnimationFrame(render);
       animate();
     },
-    playPause() {
-      if (state.animateTimeoutId) {
-        clearTimeout(state.animateTimeoutId);
-        state.animateTimeoutId = null;
-      } else {
-        animate();
-      }
-    },
   };
 
   gui.add(properties, "random").name("Random");
 
   gui.add(properties, "gosperGliderGun").name("Gosper glider gun");
+
+  gui.add(properties, "empty").name("Empty");
 
   gui
     .addColor(properties, "background", 255)
