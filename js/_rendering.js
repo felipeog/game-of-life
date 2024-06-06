@@ -5,21 +5,21 @@ import { state } from "./_state.js";
 
 export function setCanvasSize() {
   // set the actual size of the canvas
-  canvas.width = state.size.width * window.devicePixelRatio;
-  canvas.height = state.size.height * window.devicePixelRatio;
+  canvas.width = window.innerWidth * window.devicePixelRatio;
+  canvas.height = window.innerHeight * window.devicePixelRatio;
 
   // scale the context to ensure correct drawing operations
   context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
   // set the drawn size of the canvas
-  canvas.style.width = `${state.size.width}px`;
-  canvas.style.height = `${state.size.height}px`;
+  canvas.style.width = `${window.innerWidth}px`;
+  canvas.style.height = `${window.innerHeight}px`;
 }
 
 export function shouldResizeCanvas() {
   return (
-    canvas.width !== state.size.width * window.devicePixelRatio ||
-    canvas.height !== state.size.height * window.devicePixelRatio
+    canvas.width !== window.innerWidth * window.devicePixelRatio ||
+    canvas.height !== window.innerHeight * window.devicePixelRatio
   );
 }
 
@@ -28,8 +28,8 @@ export function render({ clearCanvas = true }) {
     setCanvasSize();
   }
 
-  const cellWidth = state.size.width / COLUMNS;
-  const cellHeight = state.size.height / ROWS;
+  const cellWidth = window.innerWidth / COLUMNS;
+  const cellHeight = window.innerHeight / ROWS;
 
   if (clearCanvas) {
     const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
@@ -37,7 +37,7 @@ export function render({ clearCanvas = true }) {
       ...state.color.background,
       a: backgroundAlpha,
     });
-    context.fillRect(0, 0, state.size.width, state.size.height);
+    context.fillRect(0, 0, window.innerWidth, window.innerHeight);
   }
 
   // draw cells and connections
@@ -137,8 +137,8 @@ export function getCssRgbFromColorObject(colorObject) {
 }
 
 export function toggleCell(mouseX, mouseY) {
-  const cellWidth = state.size.width / COLUMNS;
-  const cellHeight = state.size.height / ROWS;
+  const cellWidth = window.innerWidth / COLUMNS;
+  const cellHeight = window.innerHeight / ROWS;
 
   const row = Math.floor(mouseY / cellHeight);
   const column = Math.floor(mouseX / cellWidth);

@@ -4,11 +4,9 @@ import {
   handleCanvasMousemove,
   handleCanvasMouseup,
   handleWindowLoad,
-  handleWindowResize,
 } from "./_handlers.js";
 
 window.addEventListener("load", handleWindowLoad);
-window.addEventListener("resize", handleWindowResize);
 
 canvas.addEventListener("mousedown", handleCanvasMousedown);
 canvas.addEventListener("mousemove", handleCanvasMousemove);

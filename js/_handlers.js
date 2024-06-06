@@ -41,10 +41,3 @@ export function handleCanvasMousemove(event) {
 export function handleCanvasMouseup(event) {
   state.isDragging = false;
 }
-
-export function handleWindowResize() {
-  state.size = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  };
-}
