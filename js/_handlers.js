@@ -38,6 +38,10 @@ export function handleCanvasMousemove(event) {
   toggleCell(event.x, event.y);
 }
 
-export function handleCanvasMouseup(event) {
+export function handleCanvasMouseup() {
+  state.isDragging = false;
+}
+
+export function handleCanvasMouseleave() {
   state.isDragging = false;
 }
