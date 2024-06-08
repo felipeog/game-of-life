@@ -1,4 +1,4 @@
-import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm";
+import GUI from "lil-gui";
 
 import { animate, getCssRgbFromColorObject, render } from "./_rendering.js";
 import { context, wrapper } from "./_elements.js";
@@ -26,7 +26,7 @@ export function createGui() {
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     },
     gosperGliderGun() {
@@ -75,7 +75,7 @@ export function createGui() {
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     },
     empty() {
@@ -85,7 +85,7 @@ export function createGui() {
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     },
     playPause() {
@@ -117,7 +117,7 @@ export function createGui() {
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     },
   };
@@ -131,7 +131,7 @@ export function createGui() {
   appearanceFolder
     .addColor(properties, "background", 255)
     .name("Background color")
-    .onFinishChange((value) => {
+    .onFinishChange((value: Color) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.color.background = { ...value };
@@ -141,70 +141,70 @@ export function createGui() {
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder
     .addColor(properties, "foreground", 255)
     .name("Foreground color")
-    .onFinishChange((value) => {
+    .onFinishChange((value: Color) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.color.foreground = { ...value };
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder
     .add(properties, "hasTrail")
     .name("Trail")
-    .onFinishChange((value) => {
+    .onFinishChange((value: boolean) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.hasTrail = value;
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder
     .add(properties, "trailAlpha", 0, 1, 0.05)
     .name("Trail opacity")
-    .onFinishChange((value) => {
+    .onFinishChange((value: number) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.trailAlpha = 1 - value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder
     .add(properties, "isRounded")
     .name("Rounded")
-    .onFinishChange((value) => {
+    .onFinishChange((value: boolean) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.isRounded = value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder
     .add(properties, "radius", 0, 0.5, 0.05)
     .name("Radius")
-    .onFinishChange((value) => {
+    .onFinishChange((value: number) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.radius = value;
       context.fillStyle = getCssRgbFromColorObject(state.color.background);
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      requestAnimationFrame(render);
+      requestAnimationFrame((time) => render({ time }));
       animate();
     });
   appearanceFolder.add(properties, "reset").name("Reset");
@@ -213,7 +213,7 @@ export function createGui() {
   gameFolder
     .add(properties, "generationsPerSecond", 1, 30, 1)
     .name("Generations per second")
-    .onFinishChange((value) => {
+    .onFinishChange((value: number) => {
       if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
 
       state.generationsPerSecond = value;
@@ -227,10 +227,12 @@ export function createGui() {
 }
 
 function loadPreset() {
-  if (!localStorage.getItem(LOCAL_STORAGE_KEY)) return;
+  const presetInLocalStorage = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  if (!presetInLocalStorage) return;
 
   try {
-    const preset = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    const preset = JSON.parse(presetInLocalStorage);
 
     gui.load(preset);
   } catch (error) {

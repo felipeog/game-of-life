@@ -33,7 +33,11 @@ export function createEmptyGeneration() {
   return grid;
 }
 
-export function getNeighborsCount(generation, rowIndex, columnIndex) {
+export function getNeighborsCount(
+  generation: Grid,
+  rowIndex: number,
+  columnIndex: number
+) {
   let count = 0;
 
   for (
@@ -69,7 +73,7 @@ export function getNeighborsCount(generation, rowIndex, columnIndex) {
   return count;
 }
 
-export function getCellsToCheck(generation) {
+export function getCellsToCheck(generation: Grid) {
   const cellsToCheck = new Set();
 
   for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
@@ -98,7 +102,7 @@ export function getCellsToCheck(generation) {
   return cellsToCheck;
 }
 
-export function getNextGeneration(generation) {
+export function getNextGeneration(generation: Grid) {
   const grid = [];
   const cellsToCheck = getCellsToCheck(generation);
 

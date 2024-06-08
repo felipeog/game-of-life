@@ -20,19 +20,19 @@ export function handleWindowLoad() {
 
   // first render
   state.generation = createRandomGeneration();
-  requestAnimationFrame(render);
+  requestAnimationFrame((time) => render({ time }));
 
   // subsequent renders
   animate();
 }
 
-export function handleCanvasMousedown(event) {
+export function handleCanvasMousedown(event: MouseEvent) {
   state.isDragging = true;
 
   toggleCell(event.x, event.y);
 }
 
-export function handleCanvasMousemove(event) {
+export function handleCanvasMousemove(event: MouseEvent) {
   if (!state.isDragging) return;
 
   toggleCell(event.x, event.y);

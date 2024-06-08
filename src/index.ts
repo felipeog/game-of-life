@@ -1,3 +1,4 @@
+import "./index.css";
 import { canvas } from "./_elements.js";
 import {
   handleCanvasMousedown,
