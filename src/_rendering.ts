@@ -23,10 +23,9 @@ export function shouldResizeCanvas() {
   );
 }
 
-export function render(args?: { time?: number; clearCanvas?: boolean }) {
-  const { time, clearCanvas = true } = args || {};
-
-  time && console.log("render", { time });
+type RenderArguments = { time?: number; clearCanvas?: boolean };
+export function render(args: RenderArguments = {}) {
+  const { clearCanvas = true } = args;
 
   if (shouldResizeCanvas()) {
     setCanvasSize();
