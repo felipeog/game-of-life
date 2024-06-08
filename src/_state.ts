@@ -1,6 +1,6 @@
 import { color } from "./_theme.js";
 
-export const state = {
+export const state: State = {
   generation: [],
   size: {
     width: window.innerWidth,

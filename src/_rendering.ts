@@ -23,7 +23,11 @@ export function shouldResizeCanvas() {
   );
 }
 
-export function render({ clearCanvas = true }) {
+export function render(args?: { time?: number; clearCanvas?: boolean }) {
+  const { time, clearCanvas = true } = args || {};
+
+  time && console.log("render", { time });
+
   if (shouldResizeCanvas()) {
     setCanvasSize();
   }
@@ -124,19 +128,19 @@ export function animate() {
   state.animateTimeoutId = setTimeout(() => {
     state.generation = getNextGeneration(state.generation);
 
-    requestAnimationFrame(render);
+    requestAnimationFrame((time) => render({ time }));
 
     animate();
   }, 1_000 / state.generationsPerSecond);
 }
 
-export function getCssRgbFromColorObject(colorObject) {
+export function getCssRgbFromColorObject(colorObject: Color) {
   const { r, g, b, a } = colorObject;
 
   return `rgb(${r} ${g} ${b} / ${a ?? 1})`;
 }
 
-export function toggleCell(mouseX, mouseY) {
+export function toggleCell(mouseX: number, mouseY: number) {
   const cellWidth = window.innerWidth / COLUMNS;
   const cellHeight = window.innerHeight / ROWS;
 
@@ -146,7 +150,7 @@ export function toggleCell(mouseX, mouseY) {
   if (row < 0 || row >= ROWS || column < 0 || column >= COLUMNS) return;
 
   state.generation[row][column] = 1;
-  requestAnimationFrame(() => {
-    render({ clearCanvas: false });
+  requestAnimationFrame((time) => {
+    render({ time, clearCanvas: false });
   });
 }
