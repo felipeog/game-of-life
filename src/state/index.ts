@@ -1,4 +1,4 @@
-import { color } from "./_theme.js";
+import { theme } from "../theme";
 
 export const state: State = {
   generation: [],
@@ -8,7 +8,7 @@ export const state: State = {
   },
   generationsPerSecond: 15,
   animateTimeoutId: null,
-  color: { ...color },
+  color: { ...theme },
   hasTrail: true,
   trailAlpha: 0.5,
   isRounded: true,
