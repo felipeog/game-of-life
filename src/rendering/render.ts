@@ -1,27 +1,9 @@
-import { canvas, context } from "./_elements.js";
-import { getNextGeneration } from "./_game.js";
-import { ROWS, COLUMNS } from "./_constants.js";
-import { state } from "./_state.js";
-
-export function setCanvasSize() {
-  // set the actual size of the canvas
-  canvas.width = window.innerWidth * window.devicePixelRatio;
-  canvas.height = window.innerHeight * window.devicePixelRatio;
-
-  // scale the context to ensure correct drawing operations
-  context.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-  // set the drawn size of the canvas
-  canvas.style.width = `${window.innerWidth}px`;
-  canvas.style.height = `${window.innerHeight}px`;
-}
-
-export function shouldResizeCanvas() {
-  return (
-    canvas.width !== window.innerWidth * window.devicePixelRatio ||
-    canvas.height !== window.innerHeight * window.devicePixelRatio
-  );
-}
+import { context } from "../elements/context";
+import { getCssRgbFromColorObject } from "./get-css-from-color-object";
+import { setCanvasSize } from "./set-canvas-size";
+import { shouldResizeCanvas } from "./should-resize-canvas";
+import { SIZE } from "../constants/size";
+import { state } from "../state";
 
 type RenderArguments = { time?: number; clearCanvas?: boolean };
 export function render(args: RenderArguments = {}) {
@@ -31,8 +13,8 @@ export function render(args: RenderArguments = {}) {
     setCanvasSize();
   }
 
-  const cellWidth = window.innerWidth / COLUMNS;
-  const cellHeight = window.innerHeight / ROWS;
+  const cellWidth = window.innerWidth / SIZE.COLUMNS;
+  const cellHeight = window.innerHeight / SIZE.ROWS;
 
   if (clearCanvas) {
     const backgroundAlpha = state.hasTrail ? state.trailAlpha : 1;
@@ -46,8 +28,8 @@ export function render(args: RenderArguments = {}) {
   // draw cells and connections
   context.beginPath();
 
-  for (let rowIndex = 0; rowIndex < ROWS; rowIndex++) {
-    for (let columnIndex = 0; columnIndex < COLUMNS; columnIndex++) {
+  for (let rowIndex = 0; rowIndex < SIZE.ROWS; rowIndex++) {
+    for (let columnIndex = 0; columnIndex < SIZE.COLUMNS; columnIndex++) {
       const isDead = !state.generation[rowIndex][columnIndex];
 
       if (isDead) {
@@ -119,37 +101,4 @@ export function render(args: RenderArguments = {}) {
 
   context.fillStyle = getCssRgbFromColorObject(state.color.foreground);
   context.fill();
-}
-
-export function animate() {
-  if (state.animateTimeoutId) clearTimeout(state.animateTimeoutId);
-
-  state.animateTimeoutId = setTimeout(() => {
-    state.generation = getNextGeneration(state.generation);
-
-    requestAnimationFrame((time) => render({ time }));
-
-    animate();
-  }, 1_000 / state.generationsPerSecond);
-}
-
-export function getCssRgbFromColorObject(colorObject: Color) {
-  const { r, g, b, a } = colorObject;
-
-  return `rgb(${r} ${g} ${b} / ${a ?? 1})`;
-}
-
-export function toggleCell(mouseX: number, mouseY: number) {
-  const cellWidth = window.innerWidth / COLUMNS;
-  const cellHeight = window.innerHeight / ROWS;
-
-  const row = Math.floor(mouseY / cellHeight);
-  const column = Math.floor(mouseX / cellWidth);
-
-  if (row < 0 || row >= ROWS || column < 0 || column >= COLUMNS) return;
-
-  state.generation[row][column] = 1;
-  requestAnimationFrame((time) => {
-    render({ time, clearCanvas: false });
-  });
 }
